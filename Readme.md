@@ -21,5 +21,5 @@ Proyecto backend desarrollado en **Django** con integración a **MySQL** y consu
 
 1. **Clonar el repositorio:**
    ```bash
-   git clone [https://github.com/dMoscog/Prueba-tecnica.git](https://github.com/dMoscog/Prueba-tecnica.git)
+   git clone "https://github.com/dMoscog/Prueba-tecnica.git"
    cd Prueba-tecnica
