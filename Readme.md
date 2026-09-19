@@ -17,6 +17,11 @@ Proyecto backend desarrollado en **Django** con integración a **MySQL** y consu
    CREATE DATABASE rick_morty_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 ---
+## Nota para el Evaluador (Usuarios)
+Para probar los roles de **Administrador** y **Editor** solicitados en la prueba:
+1. Ejecuta `python manage.py createsuperuser` para crear tu cuenta de Administrador.
+2. Ingresa al panel de administración (`/admin/`) con ese superusuario y crea un segundo usuario con los permisos limitados para probar el rol de Editor.
+----
 ## Configuración del Entorno Local
 
 1. **Clonar el repositorio:**
