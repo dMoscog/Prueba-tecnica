@@ -24,6 +24,31 @@ Proyecto backend desarrollado en Django con integración a MySQL y consumo de la
    ```sql
    CREATE DATABASE rick_morty_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ---
+ ## Configuración inicial para iniciar todo el sistema
+ 
+1. Crear y activar el entorno virtual:Bashpython -m venv venv
+.\venv\Scripts\Activate
+Instalar las dependencias:Bashpip install -r requirements.txt
+
+2. Inicializar y Configurar el archivo .envDuplicar el archivo de ejemplo para crear tu .env:Bashcopy .env.example .env
+Configurar las credenciales: Abre el archivo .env que acabas de crear con cualquier editor de texto y rellena tus datos reales de conexión a MySQL (nombre de la base de datos, usuario, contraseña, host y puerto).
+
+Aplicar las migraciones de Django: 
+
+python manage.py migrate
+
+Sincronizar la información con la API: Ejecuta el comando personalizado para importar los registros de personajes, ubicaciones y episodios a tu base de datos local sin duplicados: 
+
+python manage.py sync_rickmorty
+
+4. Creación de Usuarios y ServidorCrear el usuario Administrador: 
+
+python manage.py createsuperuser
+
+Iniciar el servidor local: 
+
+python manage.py runserver
+---
 ## Nota para el Evaluador (Usuarios)
 Para probar los roles de Administrador y Editor solicitados en la prueba:
 1. Ejecuta `python manage.py createsuperuser` para crear tu cuenta de Administrador.
