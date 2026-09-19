@@ -26,8 +26,11 @@ Proyecto backend desarrollado en Django con integración a MySQL y consumo de la
 ---
  ## Configuración inicial para iniciar todo el sistema
  
-1. Crear y activar el entorno virtual:Bashpython -m venv venv
+1. Crear y activar el entorno virtual:
+python -m venv venv
+
 .\venv\Scripts\Activate
+
 Instalar las dependencias: pip install -r requirements.txt
 
 2. Inicializar y Configurar el archivo .envDuplicar el archivo de ejemplo para crear tu .env: 
