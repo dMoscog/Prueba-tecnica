@@ -19,5 +19,5 @@ Sigue estos pasos para clonar y poner en marcha el proyecto localmente:
 
 ### 1. Clonar el repositorio y entrar al directorio
 ```bash
-git clone <url-del-repositorio>
+git clone <https://github.com/dMoscog/Prueba-tecnica>
 cd "PRUEBA TECNICA"
