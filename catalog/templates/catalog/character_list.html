@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Catálogo de Rick and Morty</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f4f9; margin: 0; padding: 0; }
+        nav { background: #333; color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .container { max-width: 1200px; margin: auto; padding: 20px; }
+        .filters { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+        .filters input, .filters select { padding: 8px; font-size: 14px; border: 1px solid #ddd; border-radius: 4px; }
+        .filters button { padding: 8px 15px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .filters button:hover { background: #0056b3; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+        .card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.1); display: flex; flex-direction: column; justify-content: space-between; }
+        .card img { width: 100%; height: 250px; object-fit: cover; }
+        .card-body { padding: 15px; }
+        .card-title { font-size: 18px; margin: 0 0 10px 0; color: #333; }
+        .card-footer { padding: 15px; background: #f9f9f9; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #eee; }
+        .btn-create { display: inline-block; margin-bottom: 20px; background: #28a745; color: white; padding: 10px 15px; text-decoration: none; border-radius: 4px; font-weight: bold; }
+        .btn-create:hover { background: #218838; }
+        .btn-edit { background: #ffc107; color: #212529; padding: 5px 10px; text-decoration: none; border-radius: 4px; font-size: 14px; }
+        .btn-delete { background: #dc3545; color: white; padding: 5px 10px; text-decoration: none; border-radius: 4px; font-size: 14px; }
+        .pagination { margin-top: 30px; text-align: center; }
+        .pagination a, .pagination span { padding: 8px 12px; margin: 0 4px; border: 1px solid #ddd; text-decoration: none; color: #007bff; border-radius: 4px; background: white; }
+        .pagination .current { background: #007bff; color: white; border-color: #007bff; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div>
+            <strong>Rick & Morty Catalog</strong>
+        </div>
+        <div>
+            {% if user.is_authenticated %}
+                <span style="margin-right: 15px;">Hola, <strong>{{ user.username }}</strong> 
+                    {% if user.is_superuser or user.groups.all.0.name == 'Administrador' %}(Admin){% else %}(Editor){% endif %}
+                </span>
+                <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" style="background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">Cerrar Sesión</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}" style="color: white; text-decoration: none; background: #007bff; padding: 6px 12px; border-radius: 4px;">Iniciar Sesión</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Catálogo de Personajes</h1>
+
+        {% if user.is_authenticated and user.is_superuser or user.groups.all.0.name == 'Administrador' %}
+            <a href="{% url 'character_create' %}" class="btn-create">+ Crear Nuevo Personaje</a>
+        {% endif %}
+
+        <form method="GET" class="filters">
+            <input type="text" name="q" placeholder="Buscar por nombre..." value="{{ search_query }}">
+            
+            <select name="status">
+                <option value="">Todos los estados</option>
+                {% for st in statuses %}
+                    <option value="{{ st }}" {% if status_filter == st %}selected{% endif %}>{{ st }}</option>
+                {% endfor %}
+            </select>
+
+            <select name="species">
+                <option value="">Todas las especies</option>
+                {% for sp in species_list %}
+                    <option value="{{ sp }}" {% if species_filter == sp %}selected{% endif %}>{{ sp }}</option>
+                {% endfor %}
+            </select>
+
+            <select name="gender">
+                <option value="">Todos los géneros</option>
+                {% for gen in genders %}
+                    <option value="{{ gen }}" {% if gender_filter == gen %}selected{% endif %}>{{ gen }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Filtrar</button>
+            <a href="{% url 'character_list' %}" style="padding: 8px 12px; background: #6c757d; color: white; text-decoration: none; border-radius: 4px; font-size: 14px;">Limpiar</a>
+        </form>
+
+        <div class="grid">
+            {% for character in characters %}
+                <div class="card">
+                    <div>
+                        <img src="{{ character.image_url }}" alt="{{ character.name }}" onerror="this.src='https://via.placeholder.com/250x250?text=No+Image';">
+                        <div class="card-body">
+                            <h3 class="card-title">{{ character.name }}</h3>
+                            <p><strong>Estado:</strong> {{ character.status }}</p>
+                            <p><strong>Especie:</strong> {{ character.species }}</p>
+                            <p><strong>Género:</strong> {{ character.gender }}</p>
+                            <p><strong>Ubicación:</strong> {{ character.location.name|default:"Desconocida" }}</p>
+                        </div>
+                    </div>
+                    
+                    {% if user.is_authenticated and user.is_superuser or user.groups.all.0.name == 'Administrador' %}
+                        <div class="card-footer">
+                            <a href="{% url 'character_edit' character.id %}" class="btn-edit">Editar</a>
+                            <a href="{% url 'character_delete' character.id %}" class="btn-delete">Eliminar</a>
+                        </div>
+                    {% endif %}
+                </div>
+            {% empty %}
+                <p>No se encontraron personajes en la base de datos. Asegúrate de haber ejecutado el comando de sincronización.</p>
+            {% endfor %}
+        </div>
+
+        <div class="pagination">
+            {% if characters.has_previous %}
+                <a href="?page=1&q={{ search_query }}&status={{ status_filter }}&species={{ species_filter }}&gender={{ gender_filter }}">&laquo; Primera</a>
+                <a href="?page={{ characters.previous_page_number }}&q={{ search_query }}&status={{ status_filter }}&species={{ species_filter }}&gender={{ gender_filter }}">Anterior</a>
+            {% endif %}
+
+            <span class="current">Página {{ characters.number }} de {{ characters.paginator.num_pages }}</span>
+
+            {% if characters.has_next %}
+                <a href="?page={{ characters.next_page_number }}&q={{ search_query }}&status={{ status_filter }}&species={{ species_filter }}&gender={{ gender_filter }}">Siguiente</a>
+                <a href="?page={{ characters.paginator.num_pages }}&q={{ search_query }}&status={{ status_filter }}&species={{ species_filter }}&gender={{ gender_filter }}">Última &raquo;</a>
+            {% endif %}
+        </div>
+    </div>
+
+</body>
+</html>
