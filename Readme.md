@@ -28,9 +28,12 @@ Proyecto backend desarrollado en Django con integración a MySQL y consumo de la
  
 1. Crear y activar el entorno virtual:Bashpython -m venv venv
 .\venv\Scripts\Activate
-Instalar las dependencias:Bashpip install -r requirements.txt
+Instalar las dependencias: pip install -r requirements.txt
 
-2. Inicializar y Configurar el archivo .envDuplicar el archivo de ejemplo para crear tu .env:Bashcopy .env.example .env
+2. Inicializar y Configurar el archivo .envDuplicar el archivo de ejemplo para crear tu .env: 
+
+copy .env.example .env
+
 Configurar las credenciales: Abre el archivo .env que acabas de crear con cualquier editor de texto y rellena tus datos reales de conexión a MySQL (nombre de la base de datos, usuario, contraseña, host y puerto).
 
 Aplicar las migraciones de Django: 
